@@ -3,24 +3,50 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "chain": "hardhat node",
+    "contract:compile": "hardhat compile",
+    "contract:test": "hardhat test",
+    "contract:deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "db:generate": "prisma generate",
+    "db:push": "node scripts/ensure-sqlite.mjs && prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@tanstack/react-query": "^5.101.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.21.0",
     "next": "16.2.9",
+    "openai": "^6.44.0",
+    "prisma": "^6.19.3",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "server-only": "^0.0.1",
+    "viem": "^2.53.1",
+    "wagmi": "^3.6.18"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "hardhat": "^2.28.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "tsx": "^4.22.4",
+    "typescript": "^5",
+    "vitest": "^4.1.9"
   }
 }

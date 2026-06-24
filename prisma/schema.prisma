@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  FREELANCER
+  ADMIN
+}
+
+enum ProjectStatus {
+  Created
+  Funded
+  Submitted
+  Completed
+  Disputed
+  Refunded
+}
+
+enum DisputeStatus {
+  Open
+  Resolved
+}
+
+enum RecommendationType {
+  release
+  refund
+  partial
+  revise
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String?  @unique
+  role          UserRole
+  walletAddress String   @unique
+  createdAt     DateTime @default(now())
+}
+
+model Project {
+  id                String        @id @default(cuid())
+  title             String
+  description       String
+  budget            String
+  deadline          DateTime
+  clientWallet      String
+  freelancerWallet  String
+  status            ProjectStatus @default(Created)
+  contractProjectId String?
+  transactionHash   String?
+  metadataURI       String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  deliverables Deliverable[]
+  disputes     Dispute[]
+  messages     Message[]
+  transactions Transaction[]
+
+  @@index([clientWallet])
+  @@index([freelancerWallet])
+  @@index([status])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  projectId String
+  author    String
+  role      String
+  content   String
+  kind      String   @default("message")
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model Deliverable {
+  id        String   @id @default(cuid())
+  projectId String
+  title     String
+  notes     String
+  url       String?
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model Dispute {
+  id                 String        @id @default(cuid())
+  projectId          String
+  reason             String
+  clientClaim        String
+  freelancerResponse String?
+  status             DisputeStatus @default(Open)
+  createdAt          DateTime      @default(now())
+
+  project           Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  aiRecommendations AIRecommendation[]
+
+  @@index([projectId])
+}
+
+model AIRecommendation {
+  id                           String             @id @default(cuid())
+  disputeId                    String
+  recommendation               RecommendationType
+  confidence                   Float
+  summary                      String
+  reasoning                    String
+  suggestedFreelancerPercent   Int
+  suggestedClientRefundPercent Int
+  nextSteps                    String
+  createdAt                    DateTime           @default(now())
+
+  dispute Dispute @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+
+  @@index([disputeId])
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  projectId String
+  hash      String
+  type      String
+  amount    String?
+  chainId   Int?
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
