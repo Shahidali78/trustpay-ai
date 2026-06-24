@@ -20,7 +20,7 @@ Blockchain escrow platform with AI-powered dispute resolution for freelancers an
 
 ## Portfolio Description
 
-“TrustPay AI is a full-stack blockchain escrow platform for freelancers and clients. It uses Solidity smart contracts to lock and release project payments, while an AI assistant analyzes project agreements, delivery notes, and dispute messages to recommend fair resolutions.”
+TrustPay AI is a full-stack blockchain escrow platform for freelancers and clients. It uses Solidity smart contracts to lock and release project payments, while an AI assistant analyzes project agreements, delivery notes, and dispute messages to recommend fair resolutions.
 
 ## What It Does
 
